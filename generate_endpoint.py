@@ -42,6 +42,7 @@ GO_HANDLER_TEMPLATE="""
 func {}(appContext *storageapi.AppContext, r *http.Request{}) {} {{
     {}
     {}
+    {}
 }}
 """
 
@@ -83,4 +84,5 @@ if __name__ == '__main__':
         "(io.Reader, string, int)" if "File" in answers['wrappertype'] else "(interface{}, int)",
         ("\n".join(map(lambda var: var + ' := r.PostFormValue("'+var+'")', variables))) if answers['method'] == "POST" else
             ("\n".join(map(lambda var: var + ' := r.URL.Query().Get("'+var+'")', variables))),
-        "return nil, "", 500" if "File" in answers['wrappertype'] else "return map[string]string{\"status\": \"ok\"}, 200"))
+        "fmt.Println(" + ", ".join(variables) + ")",
+        "return nil, "", 500" if "File" in answers['wrappertype'] else "return map[string]interface{}{\"status\": \"ok\"}, 200"))
