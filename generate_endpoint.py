@@ -14,7 +14,8 @@ fetch('{}', {{
     if (data.status === 200)
         return data.json()
     else {{
-        //handle error
+        console.log("ERROR ", data.status)
+        return data.json()
     }}
 }})
 .then(data => {{
@@ -28,7 +29,8 @@ fetch({})
     if (data.status === 200)
         return data.json()
     else {{
-        //handle error
+        console.log("ERROR ", data.status)
+        return data.json()
     }}
 }})
 .then((data) => {{
@@ -38,6 +40,7 @@ fetch({})
 
 GO_HANDLER_TEMPLATE="""
 func {}(appContext *storageapi.AppContext, r *http.Request{}) {} {{
+    {}
     {}
 }}
 """
@@ -78,4 +81,6 @@ if __name__ == '__main__':
     print(Fore.GREEN + 'GO HANDLER' + Style.RESET_ALL)
     print(GO_HANDLER_TEMPLATE.format(answers['endpointname'], ", user int" if answers['wrappertype'][:4] == "User" else "",
         "(io.Reader, string, int)" if "File" in answers['wrappertype'] else "(interface{}, int)",
+        ("\n".join(map(lambda var: var + ' := r.PostFormValue("'+var+'")', variables))) if answers['method'] == "POST" else
+            ("\n".join(map(lambda var: var + ' := r.URL.Query().Get("'+var+'")', variables))),
         "return nil, "", 500" if "File" in answers['wrappertype'] else "return map[string]string{\"status\": \"ok\"}, 200"))
