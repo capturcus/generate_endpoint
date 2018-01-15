@@ -39,7 +39,7 @@ fetch({})
 """
 
 GO_HANDLER_TEMPLATE="""
-func {}(appContext *storageapi.AppContext, r *http.Request{}) {} {{
+func {}(appContext *webframework.AppContext, r *http.Request{}) {} {{
     {}
     {}
     {}
